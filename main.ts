@@ -110,10 +110,8 @@ controller.right.onEvent(ControllerButtonEvent.Pressed, function () {
 })
 scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile8`, function (sprite, location) {
     tiles.setTileAt(location, assets.tile`transparency8`)
-    music.play(music.melodyPlayable(music.powerUp), music.PlaybackMode.InBackground)
+    enemyWeak = 1
     info.changeScoreBy(100)
-    info.changeLifeBy(1)
-    pause(1000)
 })
 controller.down.onEvent(ControllerButtonEvent.Pressed, function () {
     mySprite.vy = 30
@@ -150,50 +148,11 @@ scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile2`, function (sprite, l
     tiles.placeOnTile(mySprite, tiles.getTileLocation(1, 11))
 })
 sprites.onOverlap(SpriteKind.Player, SpriteKind.Enemy, function (sprite, otherSprite) {
-    if (otherSprite.vx == 20 && mySprite.x < otherSprite.x) {
-        sprites.destroy(otherSprite)
-        music.play(music.melodyPlayable(music.powerUp), music.PlaybackMode.InBackground)
-        info.changeScoreBy(500)
-        pause(1000)
-    } else {
-        info.changeLifeBy(-1)
-        mySprite.setFlag(SpriteFlag.GhostThroughSprites, true)
-        music.play(music.melodyPlayable(music.wawawawaa), music.PlaybackMode.InBackground)
-        tiles.placeOnTile(mySprite, tiles.getTileLocation(14, 4))
-    }
-    if (otherSprite.vx == -20 && mySprite.x > otherSprite.x) {
-        sprites.destroy(otherSprite)
-        music.play(music.melodyPlayable(music.powerUp), music.PlaybackMode.InBackground)
-        info.changeScoreBy(500)
-        pause(1000)
-    } else {
-        info.changeLifeBy(-1)
-        music.play(music.melodyPlayable(music.wawawawaa), music.PlaybackMode.UntilDone)
-        tiles.placeOnTile(mySprite, tiles.getTileLocation(14, 4))
-    }
-    if (otherSprite.vy == -20 && mySprite.y > otherSprite.y) {
-        sprites.destroy(otherSprite)
-        music.play(music.melodyPlayable(music.powerUp), music.PlaybackMode.InBackground)
-        info.changeScoreBy(500)
-        pause(1000)
-    } else {
-        info.changeLifeBy(-1)
-        music.play(music.melodyPlayable(music.wawawawaa), music.PlaybackMode.UntilDone)
-        tiles.placeOnTile(mySprite, tiles.getTileLocation(14, 4))
-    }
-    if (otherSprite.vy == 20 && mySprite.y < otherSprite.y) {
-        sprites.destroy(otherSprite)
-        music.play(music.melodyPlayable(music.powerUp), music.PlaybackMode.InBackground)
-        info.changeScoreBy(500)
-        pause(1000)
-    } else {
-        info.changeLifeBy(-1)
-        music.play(music.melodyPlayable(music.wawawawaa), music.PlaybackMode.UntilDone)
-        tiles.placeOnTile(mySprite, tiles.getTileLocation(14, 4))
-    }
+    mySprite.sayText(":)")
 })
 let enemyOverlapY = 0
 let enemyOverlapX = 0
+let enemyWeak = 0
 let ghost: Sprite = null
 let mySprite: Sprite = null
 let enemyFlee = 0
