@@ -200,12 +200,42 @@ for (let index = 0; index < 6; index++) {
     ghost = sprites.create(imageList._pickRandom(), SpriteKind.Enemy)
     tiles.placeOnRandomTile(ghost, assets.tile`myTile0`)
 }
-for (let value of sprites.allOfKind(SpriteKind.Enemy)) {
-    enemyPath = scene.aStar(value.tilemapLocation(), mySprite.tilemapLocation())
-}
 game.onUpdate(function () {
-	
+    for (let value of sprites.allOfKind(SpriteKind.Enemy)) {
+        if (value.isHittingTile(CollisionDirection.Top)) {
+            enemyOverlapX = randint(0, 1)
+            if (enemyOverlapX == 0) {
+                value.vx = -20
+            } else {
+                value.vx = 20
+            }
+        } else if (value.isHittingTile(CollisionDirection.Bottom)) {
+            enemyOverlapX = randint(0, 1)
+            if (enemyOverlapX == 0) {
+                value.vx = -20
+            } else {
+                value.vx = 20
+            }
+        } else if (value.isHittingTile(CollisionDirection.Left)) {
+            enemyOverlapY = randint(0, 1)
+            if (enemyOverlapY == 0) {
+                value.vy = -20
+            } else {
+                value.vy = 20
+            }
+        } else {
+            enemyOverlapY = randint(0, 1)
+            if (enemyOverlapY == 0) {
+                value.vy = -20
+            } else {
+                value.vy = 20
+            }
+        }
+    }
 })
 game.onUpdate(function () {
-	
+    for (let value of sprites.allOfKind(SpriteKind.Enemy)) {
+        enemyPath = scene.aStar(value.tilemapLocation(), mySprite.tilemapLocation())
+        scene.followPath(value, enemyPath, 50)
+    }
 })
