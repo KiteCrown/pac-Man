@@ -1,161 +1,225 @@
-namespace SpriteKind {
-    export const weak = SpriteKind.create()
-}
 scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile1`, function (sprite, location) {
     mySprite.vx = -30
-    tiles.placeOnTile(mySprite, tiles.getTileLocation(28, 11))
+    tiles.placeOnTile(mySprite, tiles.getTileLocation(28, 12))
 })
 controller.up.onEvent(ControllerButtonEvent.Pressed, function () {
-    mySprite.vy = -30
-    animation.runImageAnimation(
-    mySprite,
-    [img`
-        . 5 . . 5 . 
-        5 5 . . 5 5 
-        5 5 . . 5 5 
-        5 5 5 5 5 5 
-        5 5 5 5 5 5 
-        . 5 5 5 5 . 
-        `,img`
-        . 5 . . 5 . 
-        5 5 . . 5 5 
-        5 5 . . 5 5 
-        5 5 . . 5 5 
-        5 5 5 5 5 5 
-        . 5 5 5 5 . 
-        `,img`
-        . 5 5 5 5 . 
-        5 5 5 5 5 5 
-        5 5 5 5 5 5 
-        5 5 5 5 5 5 
-        5 5 5 5 5 5 
-        . 5 5 5 5 . 
-        `],
-    100,
-    true
-    )
+    if (gameOver == 0) {
+        mySprite.vy = -30
+        animation.runImageAnimation(
+        mySprite,
+        [img`
+            . 5 . . 5 . 
+            5 5 . . 5 5 
+            5 5 . . 5 5 
+            5 5 5 5 5 5 
+            5 5 5 5 5 5 
+            . 5 5 5 5 . 
+            `,img`
+            . 5 . . 5 . 
+            5 5 . . 5 5 
+            5 5 . . 5 5 
+            5 5 . . 5 5 
+            5 5 5 5 5 5 
+            . 5 5 5 5 . 
+            `,img`
+            . 5 5 5 5 . 
+            5 5 5 5 5 5 
+            5 5 5 5 5 5 
+            5 5 5 5 5 5 
+            5 5 5 5 5 5 
+            . 5 5 5 5 . 
+            `],
+        100,
+        true
+        )
+    }
 })
-scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile6`, function (sprite, location) {
-    tiles.setTileAt(location, assets.tile`transparency8`)
-    info.changeScoreBy(30)
-    music.play(music.melodyPlayable(music.smallCrash), music.PlaybackMode.InBackground)
+controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
+    if (textSprite != null) {
+    	
+    } else {
+        for (let value of sprites.allOfKind(SpriteKind.Enemy)) {
+            if (pause2 == 0) {
+                gameOver = 1
+                pause2 = 1
+                value.setVelocity(0, 0)
+                controller.moveSprite(mySprite, 0, 0)
+            } else {
+                gameOver = 0
+                pause2 = 0
+                value.vy = 20
+            }
+        }
+    }
 })
 scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile4`, function (sprite, location) {
     mySprite.vx = 30
-    tiles.placeOnTile(mySprite, tiles.getTileLocation(1, 18))
+    tiles.placeOnTile(mySprite, tiles.getTileLocation(1, 19))
 })
 controller.left.onEvent(ControllerButtonEvent.Pressed, function () {
-    mySprite.vx = -30
-    animation.runImageAnimation(
-    mySprite,
-    [img`
-        . 5 5 5 5 . 
-        5 5 5 5 5 5 
-        . . . 5 5 5 
-        . . . 5 5 5 
-        5 5 5 5 5 5 
-        . 5 5 5 5 . 
-        `,img`
-        . 5 5 5 5 . 
-        5 5 5 5 5 5 
-        . . . . 5 5 
-        . . . . 5 5 
-        5 5 5 5 5 5 
-        . 5 5 5 5 . 
-        `,img`
-        . 5 5 5 5 . 
-        5 5 5 5 5 5 
-        5 5 5 5 5 5 
-        5 5 5 5 5 5 
-        5 5 5 5 5 5 
-        . 5 5 5 5 . 
-        `],
-    100,
-    true
-    )
+    if (gameOver == 0) {
+        mySprite.vx = -30
+        animation.runImageAnimation(
+        mySprite,
+        [img`
+            . 5 5 5 5 . 
+            5 5 5 5 5 5 
+            . . . 5 5 5 
+            . . . 5 5 5 
+            5 5 5 5 5 5 
+            . 5 5 5 5 . 
+            `,img`
+            . 5 5 5 5 . 
+            5 5 5 5 5 5 
+            . . . . 5 5 
+            . . . . 5 5 
+            5 5 5 5 5 5 
+            . 5 5 5 5 . 
+            `,img`
+            . 5 5 5 5 . 
+            5 5 5 5 5 5 
+            5 5 5 5 5 5 
+            5 5 5 5 5 5 
+            5 5 5 5 5 5 
+            . 5 5 5 5 . 
+            `],
+        100,
+        true
+        )
+    }
 })
 scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile3`, function (sprite, location) {
     mySprite.vx = -30
-    tiles.placeOnTile(mySprite, tiles.getTileLocation(29, 18))
+    tiles.placeOnTile(mySprite, tiles.getTileLocation(2, 19))
+})
+info.onCountdownEnd(function () {
+    enemyWeak = 0
 })
 controller.right.onEvent(ControllerButtonEvent.Pressed, function () {
-    mySprite.vx = 30
-    animation.runImageAnimation(
-    mySprite,
-    [img`
-        . 5 5 5 5 . 
-        5 5 5 5 5 5 
-        5 5 5 . . . 
-        5 5 5 . . . 
-        5 5 5 5 5 5 
-        . 5 5 5 5 . 
-        `,img`
-        . 5 5 5 5 . 
-        5 5 5 5 5 5 
-        5 5 . . . . 
-        5 5 . . . . 
-        5 5 5 5 5 5 
-        . 5 5 5 5 . 
-        `,img`
-        . 5 5 5 5 . 
-        5 5 5 5 5 5 
-        5 5 5 5 5 5 
-        5 5 5 5 5 5 
-        5 5 5 5 5 5 
-        . 5 5 5 5 . 
-        `],
-    100,
-    true
-    )
+    if (gameOver == 0) {
+        mySprite.vx = 30
+        animation.runImageAnimation(
+        mySprite,
+        [img`
+            . 5 5 5 5 . 
+            5 5 5 5 5 5 
+            5 5 5 . . . 
+            5 5 5 . . . 
+            5 5 5 5 5 5 
+            . 5 5 5 5 . 
+            `,img`
+            . 5 5 5 5 . 
+            5 5 5 5 5 5 
+            5 5 . . . . 
+            5 5 . . . . 
+            5 5 5 5 5 5 
+            . 5 5 5 5 . 
+            `,img`
+            . 5 5 5 5 . 
+            5 5 5 5 5 5 
+            5 5 5 5 5 5 
+            5 5 5 5 5 5 
+            5 5 5 5 5 5 
+            . 5 5 5 5 . 
+            `],
+        100,
+        true
+        )
+    }
 })
 scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile8`, function (sprite, location) {
     tiles.setTileAt(location, assets.tile`transparency8`)
     enemyWeak = 1
     info.changeScoreBy(100)
+    mySprite.sayText("EAT THOSE GHOSTS NOW!!!", 10000, false)
+    info.startCountdown(10)
 })
 controller.down.onEvent(ControllerButtonEvent.Pressed, function () {
-    mySprite.vy = 30
-    animation.runImageAnimation(
-    mySprite,
-    [img`
-        . 5 5 5 5 . 
-        5 5 5 5 5 5 
-        5 5 5 5 5 5 
-        5 5 . . 5 5 
-        5 5 . . 5 5 
-        . 5 . . 5 . 
-        `,img`
-        . 5 5 5 5 . 
-        5 5 5 5 5 5 
-        5 5 . . 5 5 
-        5 5 . . 5 5 
-        5 5 . . 5 5 
-        . 5 . . 5 . 
-        `,img`
-        . 5 5 5 5 . 
-        5 5 5 5 5 5 
-        5 5 5 5 5 5 
-        5 5 5 5 5 5 
-        5 5 5 5 5 5 
-        . 5 5 5 5 . 
-        `],
-    100,
-    true
-    )
+    if (gameOver == 0) {
+        mySprite.vy = 30
+        animation.runImageAnimation(
+        mySprite,
+        [img`
+            . 5 5 5 5 . 
+            5 5 5 5 5 5 
+            5 5 5 5 5 5 
+            5 5 . . 5 5 
+            5 5 . . 5 5 
+            . 5 . . 5 . 
+            `,img`
+            . 5 5 5 5 . 
+            5 5 5 5 5 5 
+            5 5 . . 5 5 
+            5 5 . . 5 5 
+            5 5 . . 5 5 
+            . 5 . . 5 . 
+            `,img`
+            . 5 5 5 5 . 
+            5 5 5 5 5 5 
+            5 5 5 5 5 5 
+            5 5 5 5 5 5 
+            5 5 5 5 5 5 
+            . 5 5 5 5 . 
+            `],
+        100,
+        true
+        )
+    }
 })
 scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile2`, function (sprite, location) {
     mySprite.vx = 30
-    tiles.placeOnTile(mySprite, tiles.getTileLocation(1, 11))
+    tiles.placeOnTile(mySprite, tiles.getTileLocation(1, 12))
+})
+info.onLifeZero(function () {
+    game.setGameOverPlayable(true, music.melodyPlayable(music.jumpDown), false)
+    game.setGameOverEffect(true, effects.splatter)
+    game.setGameOverMessage(true, "GAME OVER!")
+    game.gameOver(true)
+})
+sprites.onOverlap(SpriteKind.Player, SpriteKind.Food, function (sprite, otherSprite) {
+    sprites.destroy(otherSprite)
+    info.changeScoreBy(30)
+    music.play(music.melodyPlayable(music.smallCrash), music.PlaybackMode.InBackground)
+    dotCount += -1
 })
 sprites.onOverlap(SpriteKind.Player, SpriteKind.Enemy, function (sprite, otherSprite) {
-    mySprite.sayText(":)")
+    if (enemyWeak == 1) {
+        enemyCount += -1
+        sprites.destroy(otherSprite)
+        for (let index = 0; index < 4; index++) {
+            music.play(music.createSoundEffect(WaveShape.Square, 1600, 1, 255, 0, 100, SoundExpressionEffect.None, InterpolationCurve.Curve), music.PlaybackMode.InBackground)
+            pause(100)
+        }
+    } else {
+        tiles.placeOnTile(mySprite, tiles.getTileLocation(14, 4))
+        info.changeLifeBy(-1)
+        music.play(music.melodyPlayable(music.powerDown), music.PlaybackMode.InBackground)
+        for (let value of sprites.allOfKind(SpriteKind.Enemy)) {
+            gameOver = 1
+            value.setVelocity(0, 0)
+            controller.moveSprite(mySprite, 0, 0)
+            timer.after(1500, function () {
+                gameOver = 0
+                value.vy = 20
+            })
+        }
+    }
 })
+let projectile: Sprite = null
 let enemyOverlapY = 0
 let enemyOverlapX = 0
 let enemyWeak = 0
+let dot: Sprite = null
+let dotCount = 0
 let ghost: Sprite = null
+let textSprite: TextSprite = null
 let mySprite: Sprite = null
+let gameOver = 0
+let pause2 = 0
+let enemyCount = 10
+pause2 = 0
 let enemyFlee = 0
+gameOver = 0
 let imageList = [
 img`
     . 2 2 2 2 2 . 
@@ -219,10 +283,40 @@ mySprite = sprites.create(img`
     . 5 5 5 5 . 
     `, SpriteKind.Player)
 tiles.placeOnTile(mySprite, tiles.getTileLocation(14, 4))
+textSprite = textsprite.create("PAC-MAN", 15, 5)
+textSprite.setMaxFontHeight(30)
+textSprite.setPosition(125, 97)
+let start = textsprite.create("press the A button to start", 9, 8)
+start.setMaxFontHeight(3)
+start.setPosition(125, 150)
+pauseUntil(() => controller.A.isPressed())
+for (let index = 0; index < 4; index++) {
+    music.play(music.createSoundEffect(WaveShape.Square, 1600, 1, 255, 0, 100, SoundExpressionEffect.None, InterpolationCurve.Curve), music.PlaybackMode.InBackground)
+    pause(100)
+}
+sprites.destroy(textSprite)
+sprites.destroy(start)
+game.showLongText("Try to eat all of the dots or ghosties to win! Good luck!", DialogLayout.Bottom)
+music.play(music.stringPlayable("E A F A G B D F ", 200), music.PlaybackMode.LoopingInBackground)
 for (let index = 0; index < 10; index++) {
     ghost = sprites.create(imageList._pickRandom(), SpriteKind.Enemy)
     ghost.vx = 20
     tiles.placeOnRandomTile(ghost, assets.tile`myTile6`)
+}
+for (let value of tiles.getTilesByType(assets.tile`myTile6`)) {
+    dotCount += 1
+    dot = sprites.create(img`
+        . . . . . . . . 
+        . . . . . . . . 
+        . . . . . . . . 
+        . . . 5 5 . . . 
+        . . . 5 5 . . . 
+        . . . . . . . . 
+        . . . . . . . . 
+        . . . . . . . . 
+        `, SpriteKind.Food)
+    tiles.setTileAt(value, assets.tile`transparency8`)
+    tiles.placeOnTile(dot, value)
 }
 game.onUpdate(function () {
     for (let value2 of sprites.allOfKind(SpriteKind.Enemy)) {
@@ -258,5 +352,29 @@ game.onUpdate(function () {
                 value2.vy = 20
             }
         }
+    }
+})
+game.onUpdate(function () {
+    if (enemyWeak == 1) {
+        for (let value3 of sprites.allOfKind(SpriteKind.Enemy)) {
+            projectile = sprites.createProjectileFromSprite(img`
+                . 8 8 8 8 8 . 
+                8 8 8 8 8 8 8 
+                8 a 1 8 1 a 8 
+                8 a 1 8 1 a 8 
+                8 8 8 8 8 8 8 
+                8 8 8 8 8 8 8 
+                8 . 8 . 8 . 8 
+                `, value3, 0, 0)
+            timer.after(100, function () {
+                sprites.destroyAllSpritesOfKind(SpriteKind.Projectile)
+            })
+        }
+    }
+})
+game.onUpdate(function () {
+    if (enemyCount == 0) {
+        info.changeScoreBy(1000)
+        game.gameOver(true)
     }
 })
