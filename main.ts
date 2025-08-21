@@ -139,6 +139,7 @@ scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile2`, function (sprite, l
     mySprite.vx = 30
     tiles.placeOnTile(mySprite, tiles.getTileLocation(1, 11))
 })
+let enemyPath: tiles.Location[] = []
 let ghost: Sprite = null
 let mySprite: Sprite = null
 let enemyOverlapX = 0
@@ -198,10 +199,13 @@ tiles.placeOnTile(mySprite, tiles.getTileLocation(14, 3))
 for (let index = 0; index < 6; index++) {
     ghost = sprites.create(imageList._pickRandom(), SpriteKind.Enemy)
     tiles.placeOnRandomTile(ghost, assets.tile`myTile0`)
-    ghost.vy = -20
-    ghost.vx = -20
-    ghost.setBounceOnWall(true)
 }
+for (let value of sprites.allOfKind(SpriteKind.Enemy)) {
+    enemyPath = scene.aStar(value.tilemapLocation(), mySprite.tilemapLocation())
+}
+game.onUpdate(function () {
+	
+})
 game.onUpdate(function () {
 	
 })
