@@ -139,8 +139,48 @@ scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile2`, function (sprite, l
     mySprite.vx = 30
     tiles.placeOnTile(mySprite, tiles.getTileLocation(1, 11))
 })
+let ghost: Sprite = null
 let mySprite: Sprite = null
-let imageList = [0, 1]
+let enemyOverlapX = 0
+let enemyOverlapY = 0
+let imageList = [
+img`
+    . 2 2 2 2 2 . 
+    2 2 2 2 2 2 2 
+    2 1 f 2 f 1 2 
+    2 1 f 2 f 1 2 
+    2 2 2 2 2 2 2 
+    2 2 2 2 2 2 2 
+    2 . 2 . 2 . 2 
+    `,
+img`
+    . 9 9 9 9 9 . 
+    9 9 9 9 9 9 9 
+    9 1 f 9 f 1 9 
+    9 1 f 9 f 1 9 
+    9 9 9 9 9 9 9 
+    9 9 9 9 9 9 9 
+    9 . 9 . 9 . 9 
+    `,
+img`
+    . 5 5 5 5 5 . 
+    5 5 5 5 5 5 5 
+    5 1 f 5 f 1 5 
+    5 1 f 5 f 1 5 
+    5 5 5 5 5 5 5 
+    5 5 5 5 5 5 5 
+    5 . 5 . 5 . 5 
+    `,
+img`
+    . 7 7 7 7 7 . 
+    7 7 7 7 7 7 7 
+    7 1 f 7 f 1 7 
+    7 1 f 7 f 1 7 
+    7 7 7 7 7 7 7 
+    7 7 7 7 7 7 7 
+    7 . 7 . 7 . 7 
+    `
+]
 tiles.loadMap(tiles.createSmallMap(tilemap`level4`))
 namespace userconfig {
     export const ARCADE_SCREEN_WIDTH = 242
@@ -155,11 +195,13 @@ mySprite = sprites.create(img`
     . 5 5 5 5 . 
     `, SpriteKind.Player)
 tiles.placeOnTile(mySprite, tiles.getTileLocation(14, 3))
-let ghost = sprites.create(img`
-    . . . . . . 
-    . . . . . . 
-    . . . . . . 
-    . . . . . . 
-    . . . . . . 
-    . . . . . . 
-    `, SpriteKind.Enemy)
+for (let index = 0; index < 6; index++) {
+    ghost = sprites.create(imageList._pickRandom(), SpriteKind.Enemy)
+    tiles.placeOnRandomTile(ghost, assets.tile`myTile0`)
+    ghost.vy = -20
+    ghost.vx = -20
+    ghost.setBounceOnWall(true)
+}
+game.onUpdate(function () {
+	
+})
