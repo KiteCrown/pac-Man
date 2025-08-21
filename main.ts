@@ -139,17 +139,16 @@ scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile2`, function (sprite, l
     mySprite.vx = 30
     tiles.placeOnTile(mySprite, tiles.getTileLocation(1, 11))
 })
-let enemyPath: tiles.Location[] = []
+let enemyOverlapY = 0
+let enemyOverlapX = 0
 let ghost: Sprite = null
 let mySprite: Sprite = null
-let enemyOverlapX = 0
-let enemyOverlapY = 0
 let imageList = [
 img`
     . 2 2 2 2 2 . 
     2 2 2 2 2 2 2 
-    2 1 f 2 f 1 2 
-    2 1 f 2 f 1 2 
+    2 1 8 2 8 1 2 
+    2 1 8 2 8 1 2 
     2 2 2 2 2 2 2 
     2 2 2 2 2 2 2 
     2 . 2 . 2 . 2 
@@ -157,8 +156,8 @@ img`
 img`
     . 9 9 9 9 9 . 
     9 9 9 9 9 9 9 
-    9 1 f 9 f 1 9 
-    9 1 f 9 f 1 9 
+    9 1 8 9 8 1 9 
+    9 1 8 9 8 1 9 
     9 9 9 9 9 9 9 
     9 9 9 9 9 9 9 
     9 . 9 . 9 . 9 
@@ -166,8 +165,8 @@ img`
 img`
     . 5 5 5 5 5 . 
     5 5 5 5 5 5 5 
-    5 1 f 5 f 1 5 
-    5 1 f 5 f 1 5 
+    5 1 8 5 8 1 5 
+    5 1 8 5 8 1 5 
     5 5 5 5 5 5 5 
     5 5 5 5 5 5 5 
     5 . 5 . 5 . 5 
@@ -175,8 +174,8 @@ img`
 img`
     . 7 7 7 7 7 . 
     7 7 7 7 7 7 7 
-    7 1 f 7 f 1 7 
-    7 1 f 7 f 1 7 
+    7 1 8 7 8 1 7 
+    7 1 8 7 8 1 7 
     7 7 7 7 7 7 7 
     7 7 7 7 7 7 7 
     7 . 7 . 7 . 7 
@@ -185,8 +184,9 @@ img`
 tiles.loadMap(tiles.createSmallMap(tilemap`level4`))
 namespace userconfig {
     export const ARCADE_SCREEN_WIDTH = 242
-    export const ARCADE_SCREEN_HEIGHT = 240
+    export const ARCADE_SCREEN_HEIGHT = 256
 }
+info.setLife(3)
 mySprite = sprites.create(img`
     . 5 5 5 5 . 
     5 5 5 5 5 5 
@@ -195,10 +195,11 @@ mySprite = sprites.create(img`
     5 5 5 5 5 5 
     . 5 5 5 5 . 
     `, SpriteKind.Player)
-tiles.placeOnTile(mySprite, tiles.getTileLocation(14, 3))
-for (let index = 0; index < 6; index++) {
+tiles.placeOnTile(mySprite, tiles.getTileLocation(14, 4))
+for (let index = 0; index < 10; index++) {
     ghost = sprites.create(imageList._pickRandom(), SpriteKind.Enemy)
-    tiles.placeOnRandomTile(ghost, assets.tile`myTile0`)
+    ghost.vx = 20
+    tiles.placeOnRandomTile(ghost, assets.tile`myTile6`)
 }
 game.onUpdate(function () {
     for (let value of sprites.allOfKind(SpriteKind.Enemy)) {
@@ -209,21 +210,24 @@ game.onUpdate(function () {
             } else {
                 value.vx = 20
             }
-        } else if (value.isHittingTile(CollisionDirection.Bottom)) {
+        }
+        if (value.isHittingTile(CollisionDirection.Bottom)) {
             enemyOverlapX = randint(0, 1)
             if (enemyOverlapX == 0) {
                 value.vx = -20
             } else {
                 value.vx = 20
             }
-        } else if (value.isHittingTile(CollisionDirection.Left)) {
+        }
+        if (value.isHittingTile(CollisionDirection.Left)) {
             enemyOverlapY = randint(0, 1)
             if (enemyOverlapY == 0) {
                 value.vy = -20
             } else {
                 value.vy = 20
             }
-        } else {
+        }
+        if (value.isHittingTile(CollisionDirection.Right)) {
             enemyOverlapY = randint(0, 1)
             if (enemyOverlapY == 0) {
                 value.vy = -20
@@ -234,8 +238,5 @@ game.onUpdate(function () {
     }
 })
 game.onUpdate(function () {
-    for (let value of sprites.allOfKind(SpriteKind.Enemy)) {
-        enemyPath = scene.aStar(value.tilemapLocation(), mySprite.tilemapLocation())
-        scene.followPath(value, enemyPath, 50)
-    }
+	
 })
