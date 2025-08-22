@@ -34,6 +34,57 @@ controller.up.onEvent(ControllerButtonEvent.Pressed, function () {
         )
     }
 })
+controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
+    if (game2 == 0) {
+        music.play(music.melodyPlayable(music.magicWand), music.PlaybackMode.UntilDone)
+        timer.after(1500, function () {
+            gameOver = 0
+            game2 = 1
+            for (let index = 0; index < 4; index++) {
+                music.play(music.createSoundEffect(WaveShape.Square, 1600, 1, 255, 0, 100, SoundExpressionEffect.None, InterpolationCurve.Curve), music.PlaybackMode.InBackground)
+                pause(100)
+            }
+            sprites.destroy(textSprite)
+            sprites.destroy(start)
+            game.showLongText("Try to eat all of the ghosties to win! Good luck!", DialogLayout.Bottom)
+            for (let index = 0; index < 50; index++) {
+                ghost = sprites.create(imageList._pickRandom(), SpriteKind.Enemy)
+                ghost.vx = 20
+                tiles.placeOnRandomTile(ghost, assets.tile`myTile6`)
+            }
+            for (let value of tiles.getTilesByType(assets.tile`myTile6`)) {
+                dotCount += 1
+                dot = sprites.create(img`
+                    . . . . . . . . 
+                    . . . . . . . . 
+                    . . . . . . . . 
+                    . . . 5 5 . . . 
+                    . . . 5 5 . . . 
+                    . . . . . . . . 
+                    . . . . . . . . 
+                    . . . . . . . . 
+                    `, SpriteKind.Food)
+                tiles.setTileAt(value, assets.tile`transparency8`)
+                tiles.placeOnTile(dot, value)
+            }
+            for (let value of tiles.getTilesByType(assets.tile`myTile0`)) {
+                dotCount += 1
+                dot = sprites.create(img`
+                    . . . . . . . . 
+                    . . . . . . . . 
+                    . . . . . . . . 
+                    . . . 5 5 . . . 
+                    . . . 5 5 . . . 
+                    . . . . . . . . 
+                    . . . . . . . . 
+                    . . . . . . . . 
+                    `, SpriteKind.Food)
+                tiles.setTileAt(value, assets.tile`transparency8`)
+                tiles.placeOnTile(dot, value)
+            }
+        })
+    }
+})
 scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile4`, function (sprite, location) {
     mySprite.vx = 30
     tiles.placeOnTile(mySprite, tiles.getTileLocation(1, 19))
@@ -111,6 +162,7 @@ controller.right.onEvent(ControllerButtonEvent.Pressed, function () {
 })
 scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile8`, function (sprite, location) {
     tiles.setTileAt(location, assets.tile`transparency8`)
+    music.play(music.melodyPlayable(music.magicWand), music.PlaybackMode.InBackground)
     enemyWeak = 1
     info.changeScoreBy(100)
     info.startCountdown(10)
@@ -376,15 +428,19 @@ let enemyOverlapY = 0
 let enemyOverlapX = 0
 let enemyWeak = 0
 let dot: Sprite = null
-let dotCount = 0
 let ghost: Sprite = null
+let start: TextSprite = null
+let textSprite: TextSprite = null
 let mySprite: Sprite = null
+let imageList: Image[] = []
+let game2 = 0
 let gameOver = 0
-let enemyCount = 10
+let enemyCount = 50
 let pause2 = 0
 let enemyFlee = 0
 gameOver = 0
-let imageList = [
+game2 = 0
+imageList = [
 img`
     . 2 2 2 2 2 . 
     2 2 2 2 2 2 2 
@@ -447,45 +503,14 @@ mySprite = sprites.create(img`
     . 5 5 5 5 . 
     `, SpriteKind.Player)
 tiles.placeOnTile(mySprite, tiles.getTileLocation(14, 4))
-let textSprite = textsprite.create("PAC-MAN", 15, 5)
+textSprite = textsprite.create("PAC-MAN", 15, 5)
 textSprite.setMaxFontHeight(30)
 textSprite.setPosition(125, 97)
-let start = textsprite.create("press the A button to start", 9, 8)
+start = textsprite.create("press the A button to start", 9, 8)
 start.setMaxFontHeight(3)
 start.setPosition(125, 150)
 gameOver = 1
-pauseUntil(() => controller.A.isPressed())
-music.play(music.melodyPlayable(music.magicWand), music.PlaybackMode.UntilDone)
-timer.after(1500, function () {
-    gameOver = 0
-    for (let index = 0; index < 4; index++) {
-        music.play(music.createSoundEffect(WaveShape.Square, 1600, 1, 255, 0, 100, SoundExpressionEffect.None, InterpolationCurve.Curve), music.PlaybackMode.InBackground)
-        pause(100)
-    }
-    sprites.destroy(textSprite)
-    sprites.destroy(start)
-    game.showLongText("Try to eat all of the dots or ghosties to win! Good luck!", DialogLayout.Bottom)
-    for (let index = 0; index < 10; index++) {
-        ghost = sprites.create(imageList._pickRandom(), SpriteKind.Enemy)
-        ghost.vx = 20
-        tiles.placeOnRandomTile(ghost, assets.tile`myTile6`)
-    }
-    for (let value of tiles.getTilesByType(assets.tile`myTile6`)) {
-        dotCount += 1
-        dot = sprites.create(img`
-            . . . . . . . . 
-            . . . . . . . . 
-            . . . . . . . . 
-            . . . 5 5 . . . 
-            . . . 5 5 . . . 
-            . . . . . . . . 
-            . . . . . . . . 
-            . . . . . . . . 
-            `, SpriteKind.Food)
-        tiles.setTileAt(value, assets.tile`transparency8`)
-        tiles.placeOnTile(dot, value)
-    }
-})
+let dotCount = 5
 game.onUpdate(function () {
     for (let value2 of sprites.allOfKind(SpriteKind.Enemy)) {
         if (value2.isHittingTile(CollisionDirection.Top)) {
@@ -542,9 +567,24 @@ game.onUpdate(function () {
 })
 game.onUpdate(function () {
     if (enemyCount == 0) {
-        info.changeScoreBy(1000)
+        info.changeScoreBy(10000)
         game.setGameOverEffect(true, effects.starField)
         game.setGameOverPlayable(true, music.melodyPlayable(music.magicWand), false)
         game.gameOver(true)
+    }
+})
+game.onUpdate(function () {
+    if (game2 == 1) {
+        if (dotCount == 0) {
+            info.changeScoreBy(5000)
+            game.setGameOverEffect(true, effects.starField)
+            game.setGameOverPlayable(true, music.melodyPlayable(music.magicWand), false)
+            game.gameOver(true)
+        }
+    }
+})
+game.onUpdateInterval(10000, function () {
+    if (game2 == 1) {
+        tiles.setTileAt(ghost.tilemapLocation(), assets.tile`myTile8`)
     }
 })
