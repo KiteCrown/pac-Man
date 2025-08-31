@@ -43,7 +43,7 @@ controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
             sprites.destroy(textSprite)
             sprites.destroy(start)
             game.showLongText("Try to eat all of the dots to win! Respawned ghosts are invincible to powers. Good luck! pls, if your device is bad, then it might have a little problem. ", DialogLayout.Bottom)
-            for (let index = 0; index < 30; index++) {
+            for (let index = 0; index < 15; index++) {
                 ghost = sprites.create(imageList._pickRandom(), SpriteKind.Enemy)
                 ghost.vx = 20
                 tiles.placeOnRandomTile(ghost, assets.tile`myTile6`)
