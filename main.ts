@@ -138,7 +138,18 @@ scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile8`, function (sprite, l
     music.play(music.melodyPlayable(music.magicWand), music.PlaybackMode.InBackground)
     enemyWeak = 1
     info.changeScoreBy(100)
-    info.startCountdown(10)
+    for (let value3 of sprites.allOfKind(SpriteKind.Enemy)) {
+        timer.after(5000, function () {
+            mySprite.sayText("ghost rage in 3 sec", 1000, true)
+        })
+        for (let value32 of sprites.allOfKind(SpriteKind.Enemy)) {
+            timer.after(10000, function () {
+                enemyWeak = 0
+                animation.stopAnimation(animation.AnimationTypes.All, value32)
+                value32.setImage(imageList._pickRandom())
+            })
+        }
+    }
 })
 controller.down.onEvent(ControllerButtonEvent.Pressed, function () {
     if (gameOver == 0) {
@@ -358,9 +369,11 @@ info.onLifeZero(function () {
     100,
     false
     )
-    game.setGameOverEffect(true, effects.melt)
-    game.setGameOverPlayable(true, music.melodyPlayable(music.powerDown), false)
-    game.gameOver(true)
+    timer.after(2100, function () {
+        game.setGameOverEffect(true, effects.melt)
+        game.setGameOverPlayable(true, music.melodyPlayable(music.powerDown), false)
+        game.gameOver(true)
+    })
 })
 sprites.onOverlap(SpriteKind.Player, SpriteKind.Food, function (sprite, otherSprite) {
     sprites.destroy(otherSprite)
@@ -379,21 +392,25 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.Enemy, function (sprite, otherSp
             pause(100)
         }
     } else {
-        tiles.placeOnTile(mySprite, tiles.getTileLocation(14, 4))
-        info.changeLifeBy(-1)
-        music.play(music.melodyPlayable(music.powerDown), music.PlaybackMode.InBackground)
-        for (let value of sprites.allOfKind(SpriteKind.Enemy)) {
-            gameOver = 1
-            value.setVelocity(0, 0)
-            mySprite.setVelocity(0, 0)
-            timer.after(1500, function () {
-                gameOver = 0
-                value.vy = 20
-            })
+        if (info.life() >= 0) {
+            for (let value33 of sprites.allOfKind(SpriteKind.Enemy)) {
+                value33.setImage(imageList._pickRandom())
+            }
+            tiles.placeOnTile(mySprite, tiles.getTileLocation(14, 4))
+            info.changeLifeBy(-1)
+            music.play(music.melodyPlayable(music.powerDown), music.PlaybackMode.InBackground)
+            for (let value2 of sprites.allOfKind(SpriteKind.Enemy)) {
+                gameOver = 1
+                value2.setVelocity(0, 0)
+                mySprite.setVelocity(0, 0)
+                timer.after(1500, function () {
+                    gameOver = 0
+                    value2.vy = 20
+                })
+            }
         }
     }
 })
-let projectile: Sprite = null
 let enemyOverlapY = 0
 let enemyOverlapX = 0
 let enemyWeak = 0
@@ -405,9 +422,9 @@ let mySprite: Sprite = null
 let imageList: Image[] = []
 let game2 = 0
 let gameOver = 0
-let invincible = 0
-let pause2 = 0
 let enemyFlee = 0
+let pause2 = 0
+let invincible = 0
 gameOver = 0
 game2 = 0
 imageList = [
@@ -453,7 +470,7 @@ namespace userconfig {
     export const ARCADE_SCREEN_WIDTH = 242
     export const ARCADE_SCREEN_HEIGHT = 256
 }
-info.setLife(3)
+info.setLife(1)
 spriteutils.setLifeImage(img`
     . . f f f f . . 
     . f 5 5 5 5 f . 
@@ -482,62 +499,67 @@ start.setPosition(125, 150)
 gameOver = 1
 let dotCount = 5
 game.onUpdate(function () {
-    for (let value2 of sprites.allOfKind(SpriteKind.Enemy)) {
-        if (value2.isHittingTile(CollisionDirection.Top)) {
+    for (let value22 of sprites.allOfKind(SpriteKind.Enemy)) {
+        if (value22.isHittingTile(CollisionDirection.Top)) {
             enemyOverlapX = randint(0, 1)
             if (enemyOverlapX == 0) {
-                value2.vx = -20
+                value22.vx = -20
             } else {
-                value2.vx = 20
+                value22.vx = 20
             }
         }
-        if (value2.isHittingTile(CollisionDirection.Bottom)) {
+        if (value22.isHittingTile(CollisionDirection.Bottom)) {
             enemyOverlapX = randint(0, 1)
             if (enemyOverlapX == 0) {
-                value2.vx = -20
+                value22.vx = -20
             } else {
-                value2.vx = 20
+                value22.vx = 20
             }
         }
-        if (value2.isHittingTile(CollisionDirection.Left)) {
+        if (value22.isHittingTile(CollisionDirection.Left)) {
             enemyOverlapY = randint(0, 1)
             if (enemyOverlapY == 0) {
-                value2.vy = -20
+                value22.vy = -20
             } else {
-                value2.vy = 20
+                value22.vy = 20
             }
         }
-        if (value2.isHittingTile(CollisionDirection.Right)) {
+        if (value22.isHittingTile(CollisionDirection.Right)) {
             enemyOverlapY = randint(0, 1)
             if (enemyOverlapY == 0) {
-                value2.vy = -20
+                value22.vy = -20
             } else {
-                value2.vy = 20
+                value22.vy = 20
             }
         }
     }
 })
 game.onUpdate(function () {
-    if (enemyWeak == 1) {
-        for (let value3 of sprites.allOfKind(SpriteKind.Enemy)) {
-            projectile = sprites.createProjectileFromSprite(img`
+    for (let value34 of sprites.allOfKind(SpriteKind.Enemy)) {
+        if (enemyWeak == 1) {
+            mySprite.setFlag(SpriteFlag.GhostThroughTiles, true)
+            animation.runImageAnimation(
+            value34,
+            [img`
                 8 . . 8 . . 8 
                 . 8 8 8 8 8 . 
-                . 8 2 8 2 8 . 
-                8 8 1 8 1 8 8 
-                . 8 2 8 2 8 . 
+                . 8 8 8 8 8 . 
+                8 8 a 8 a 8 8 
+                . 8 8 8 8 8 . 
                 . 8 8 8 8 8 . 
                 8 . . 8 . . 8 
-                `, value3, 0, 0)
-            timer.after(10, function () {
-                sprites.destroyAllSpritesOfKind(SpriteKind.Projectile)
-            })
+                `],
+            100,
+            false
+            )
+        } else {
+            mySprite.setFlag(SpriteFlag.GhostThroughTiles, false)
         }
     }
 })
 game.onUpdate(function () {
-    if ((0 as any) == (1 as any)) {
-        if (dotCount == 0) {
+    for (let value35 of sprites.allOfKind(SpriteKind.Food)) {
+        if (value35 == null) {
             info.changeScoreBy(5000)
             game.setGameOverEffect(true, effects.starField)
             game.setGameOverPlayable(true, music.melodyPlayable(music.magicWand), false)
