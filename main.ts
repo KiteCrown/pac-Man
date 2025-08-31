@@ -1,7 +1,3 @@
-scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile1`, function (sprite, location) {
-    mySprite.vx = -30
-    tiles.placeOnTile(mySprite, tiles.getTileLocation(28, 12))
-})
 controller.up.onEvent(ControllerButtonEvent.Pressed, function () {
     if (gameOver == 0) {
         mySprite.vy = -30
@@ -46,8 +42,8 @@ controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
             }
             sprites.destroy(textSprite)
             sprites.destroy(start)
-            game.showLongText("Try to eat all of the ghosties to win! Good luck!", DialogLayout.Bottom)
-            for (let index = 0; index < 50; index++) {
+            game.showLongText("Try to eat all of the dots to win! Respawned ghosts are invincible to powers. Good luck!", DialogLayout.Bottom)
+            for (let index = 0; index < 30; index++) {
                 ghost = sprites.create(imageList._pickRandom(), SpriteKind.Enemy)
                 ghost.vx = 20
                 tiles.placeOnRandomTile(ghost, assets.tile`myTile6`)
@@ -57,25 +53,10 @@ controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
                 dot = sprites.create(img`
                     . . . . . . . . 
                     . . . . . . . . 
-                    . . . . . . . . 
-                    . . . 5 5 . . . 
-                    . . . 5 5 . . . 
-                    . . . . . . . . 
-                    . . . . . . . . 
-                    . . . . . . . . 
-                    `, SpriteKind.Food)
-                tiles.setTileAt(value, assets.tile`transparency8`)
-                tiles.placeOnTile(dot, value)
-            }
-            for (let value of tiles.getTilesByType(assets.tile`myTile0`)) {
-                dotCount += 1
-                dot = sprites.create(img`
-                    . . . . . . . . 
-                    . . . . . . . . 
-                    . . . . . . . . 
-                    . . . 5 5 . . . 
-                    . . . 5 5 . . . 
-                    . . . . . . . . 
+                    . . . 6 6 . . . 
+                    . . 6 8 8 6 . . 
+                    . . 6 8 8 6 . . 
+                    . . . 6 6 . . . 
                     . . . . . . . . 
                     . . . . . . . . 
                     `, SpriteKind.Food)
@@ -84,10 +65,6 @@ controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
             }
         })
     }
-})
-scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile4`, function (sprite, location) {
-    mySprite.vx = 30
-    tiles.placeOnTile(mySprite, tiles.getTileLocation(1, 19))
 })
 controller.left.onEvent(ControllerButtonEvent.Pressed, function () {
     if (gameOver == 0) {
@@ -120,10 +97,6 @@ controller.left.onEvent(ControllerButtonEvent.Pressed, function () {
         true
         )
     }
-})
-scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile3`, function (sprite, location) {
-    mySprite.vx = -30
-    tiles.placeOnTile(mySprite, tiles.getTileLocation(2, 19))
 })
 info.onCountdownEnd(function () {
     enemyWeak = 0
@@ -199,11 +172,9 @@ controller.down.onEvent(ControllerButtonEvent.Pressed, function () {
         )
     }
 })
-scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile2`, function (sprite, location) {
-    mySprite.vx = 30
-    tiles.placeOnTile(mySprite, tiles.getTileLocation(1, 12))
-})
 info.onLifeZero(function () {
+    info.changeScoreBy(10000)
+    info.changeScoreBy(5000)
     sprites.destroyAllSpritesOfKind(SpriteKind.Enemy)
     animation.runImageAnimation(
     mySprite,
@@ -387,12 +358,9 @@ info.onLifeZero(function () {
     100,
     false
     )
-    timer.after(2200, function () {
-        game.setGameOverPlayable(true, music.melodyPlayable(music.bigCrash), false)
-        game.setGameOverEffect(true, effects.splatter)
-        game.setGameOverMessage(true, "GAME OVER!")
-        game.gameOver(true)
-    })
+    game.setGameOverEffect(true, effects.melt)
+    game.setGameOverPlayable(true, music.melodyPlayable(music.powerDown), false)
+    game.gameOver(true)
 })
 sprites.onOverlap(SpriteKind.Player, SpriteKind.Food, function (sprite, otherSprite) {
     sprites.destroy(otherSprite)
@@ -402,8 +370,10 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.Food, function (sprite, otherSpr
 })
 sprites.onOverlap(SpriteKind.Player, SpriteKind.Enemy, function (sprite, otherSprite) {
     if (enemyWeak == 1) {
-        enemyCount += -1
         sprites.destroy(otherSprite)
+        ghost = sprites.create(imageList._pickRandom(), SpriteKind.Enemy)
+        ghost.vx = 20
+        tiles.placeOnRandomTile(ghost, assets.tile`myTile6`)
         for (let index = 0; index < 4; index++) {
             music.play(music.createSoundEffect(WaveShape.Square, 1600, 1, 255, 0, 100, SoundExpressionEffect.None, InterpolationCurve.Curve), music.PlaybackMode.InBackground)
             pause(100)
@@ -435,47 +405,47 @@ let mySprite: Sprite = null
 let imageList: Image[] = []
 let game2 = 0
 let gameOver = 0
-let enemyCount = 50
+let invincible = 0
 let pause2 = 0
 let enemyFlee = 0
 gameOver = 0
 game2 = 0
 imageList = [
 img`
+    2 . . 2 . . 2 
     . 2 2 2 2 2 . 
-    2 2 2 2 2 2 2 
-    2 1 8 2 8 1 2 
-    2 1 8 2 8 1 2 
-    2 2 2 2 2 2 2 
-    2 2 2 2 2 2 2 
-    2 . 2 . 2 . 2 
+    . 2 2 2 2 2 . 
+    2 2 a 2 a 2 2 
+    . 2 2 2 2 2 . 
+    . 2 2 2 2 2 . 
+    2 . . 2 . . 2 
     `,
 img`
+    9 . . 9 . . 9 
     . 9 9 9 9 9 . 
-    9 9 9 9 9 9 9 
-    9 1 8 9 8 1 9 
-    9 1 8 9 8 1 9 
-    9 9 9 9 9 9 9 
-    9 9 9 9 9 9 9 
-    9 . 9 . 9 . 9 
+    . 9 9 9 9 9 . 
+    9 9 a 9 a 9 9 
+    . 9 9 9 9 9 . 
+    . 9 9 9 9 9 . 
+    9 . . 9 . . 9 
     `,
 img`
+    5 . . 5 . . 5 
     . 5 5 5 5 5 . 
-    5 5 5 5 5 5 5 
-    5 1 8 5 8 1 5 
-    5 1 8 5 8 1 5 
-    5 5 5 5 5 5 5 
-    5 5 5 5 5 5 5 
-    5 . 5 . 5 . 5 
+    . 5 5 5 5 5 . 
+    5 5 a 5 a 5 5 
+    . 5 5 5 5 5 . 
+    . 5 5 5 5 5 . 
+    5 . . 5 . . 5 
     `,
 img`
+    7 . . 7 . . 7 
     . 7 7 7 7 7 . 
-    7 7 7 7 7 7 7 
-    7 1 8 7 8 1 7 
-    7 1 8 7 8 1 7 
-    7 7 7 7 7 7 7 
-    7 7 7 7 7 7 7 
-    7 . 7 . 7 . 7 
+    . 7 7 7 7 7 . 
+    7 7 a 7 a 7 7 
+    . 7 7 7 7 7 . 
+    . 7 7 7 7 7 . 
+    7 . . 7 . . 7 
     `
 ]
 tiles.loadMap(tiles.createSmallMap(tilemap`level4`))
@@ -551,30 +521,22 @@ game.onUpdate(function () {
     if (enemyWeak == 1) {
         for (let value3 of sprites.allOfKind(SpriteKind.Enemy)) {
             projectile = sprites.createProjectileFromSprite(img`
+                8 . . 8 . . 8 
                 . 8 8 8 8 8 . 
-                8 8 8 8 8 8 8 
-                8 a 1 8 1 a 8 
-                8 a 1 8 1 a 8 
-                8 8 8 8 8 8 8 
-                8 8 8 8 8 8 8 
-                8 . 8 . 8 . 8 
+                . 8 2 8 2 8 . 
+                8 8 1 8 1 8 8 
+                . 8 2 8 2 8 . 
+                . 8 8 8 8 8 . 
+                8 . . 8 . . 8 
                 `, value3, 0, 0)
-            timer.after(100, function () {
+            timer.after(10, function () {
                 sprites.destroyAllSpritesOfKind(SpriteKind.Projectile)
             })
         }
     }
 })
 game.onUpdate(function () {
-    if (enemyCount == 0) {
-        info.changeScoreBy(10000)
-        game.setGameOverEffect(true, effects.starField)
-        game.setGameOverPlayable(true, music.melodyPlayable(music.magicWand), false)
-        game.gameOver(true)
-    }
-})
-game.onUpdate(function () {
-    if (game2 == 1) {
+    if ((0 as any) == (1 as any)) {
         if (dotCount == 0) {
             info.changeScoreBy(5000)
             game.setGameOverEffect(true, effects.starField)
