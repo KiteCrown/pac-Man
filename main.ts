@@ -99,7 +99,7 @@ controller.left.onEvent(ControllerButtonEvent.Pressed, function () {
     }
 })
 info.onCountdownEnd(function () {
-    enemyWeak = 0
+    game.gameOver(true)
 })
 controller.right.onEvent(ControllerButtonEvent.Pressed, function () {
     if (gameOver == 0) {
@@ -481,6 +481,7 @@ spriteutils.setLifeImage(img`
     . f 5 5 5 5 f . 
     . . f f f f . . 
     `)
+info.startCountdown(60)
 mySprite = sprites.create(img`
     . 5 5 5 5 . 
     5 5 5 5 5 5 
